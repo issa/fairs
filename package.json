@@ -41,8 +41,9 @@
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "no-test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "deploy": "gatsby build --prefix-paths && gh-pages -d public -r https://$GH_TOKEN@github.com/issa/spieletage.git"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 0",
+    "xdeploy": "gatsby build --prefix-paths && gh-pages -d public -r https://$GH_TOKEN@issa.github.com/issa/fairs.git",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public"
   },
   "repository": {
     "type": "git",
