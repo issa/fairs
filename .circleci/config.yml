@@ -35,14 +35,6 @@ workflows:
               only:
                 - master
 jobs:
-  build:
-    executor: node-executor
-    working_directory: ~/repo
-    steps:
-      - gatsby-build
-      - run:
-          name: GH-Pages Deploy
-          command: ./node_modules/.bin/gh-pages -d public
   release:
     executor: node-executor
     working_directory: ~/repo
@@ -50,4 +42,4 @@ jobs:
       - gatsby-build
       - run:
           name: GH-Pages Deploy
-          command: ./node_modules/.bin/gh-pages -d public
+          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git
