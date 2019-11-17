@@ -38,7 +38,7 @@ jobs:
       - gatsby-build
       - run:
           name: GH-Pages Deploy
-          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git
+          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git -m "Updates [ci skip]"
 workflows:
   version: 2.1
   build:
