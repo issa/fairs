@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 commands:
   gatsby-build:
     steps:
@@ -26,7 +26,7 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/application
-  build:
+  build_and_deploy:
     docker:
       - image: circleci/node:10
     working_directory: ~/application
@@ -40,11 +40,11 @@ jobs:
           name: GH-Pages Deploy
           command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git -m "Updates [ci skip]"
 workflows:
-  version: 2.1
+  version: 2
   build:
     jobs:
       - setup
-      - build:
+      - build_and_deploy:
           requires:
             - setup
           filters:
