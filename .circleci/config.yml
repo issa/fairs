@@ -1,10 +1,15 @@
 version: 2.1
-executors:
-  node-executor:
-    docker:
-      - image: circleci/node:10
 commands:
   gatsby-build:
+    steps:
+      - run:
+          name: Gatsby Build
+          command: yarn build
+jobs:
+  setup:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/application
     steps:
       - checkout
       - restore_cache:
@@ -17,37 +22,32 @@ commands:
           key: yarn-cache-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
+      - save_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/application
+  build_and_deploy:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/application
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - gatsby-build
       - run:
-          name: Gatsby Build
-          command: yarn build
+          name: GH-Pages Deploy
+          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git
 workflows:
-  version: 2
-  build-deploy:
+  version: 2.1
+  build:
     jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - master
-      - release:
+      - setup
+      - build_and_deploy:
+          requires:
+            - setup
           filters:
             branches:
               only:
                 - master
-jobs:
-  build:
-    executor: node-executor
-    working_directory: ~/repo
-    steps:
-      - gatsby-build
-      - run:
-          name: GH-Pages Deploy
-          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git
-  release:
-    executor: node-executor
-    working_directory: ~/repo
-    steps:
-      - gatsby-build
-      - run:
-          name: GH-Pages Deploy
-          command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git
