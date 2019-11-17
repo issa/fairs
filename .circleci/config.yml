@@ -1,10 +1,4 @@
 version: 2
-commands:
-  gatsby-build:
-    steps:
-      - run:
-          name: Gatsby Build
-          command: yarn build
 jobs:
   setup:
     docker:
@@ -35,7 +29,9 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - gatsby-build
+      - run:
+          name: Gatsby Build
+          command: yarn build
       - run:
           name: GH-Pages Deploy
           command: ./node_modules/.bin/gh-pages -d public -r https://${GH_TOKEN}@github.com/issa/fairs.git -m "Updates [ci skip]"
